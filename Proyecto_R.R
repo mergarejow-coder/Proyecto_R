@@ -176,7 +176,7 @@ export_report <- function(flujo, recs, file_out) {
 # INTERFAZ DEL USUARIO (UI)
 #============================================================
 
-# Este bloque permite al usuario ingresar datos mediante carga de archivos Excel o ingreso manual, 
+# Este bloque me permite ingresar datos mediante carga de archivos Excel o ingreso manual, 
 # configurar parámetros de análisis y ejecutar el modelo de liquidez. 
 # Además, presenta de forma visual los resultados, alertas y tablas clave.
 
@@ -259,9 +259,9 @@ ui <- fluidPage(
 # SERVIDOR
 #============================================================
 
-# Este bloque conecta la interfaz de usuario con la lógica del modelo, 
-# prmitiendo la ejecución del análisis, la validación de datos y el 
-# control de errores. Administra los objetos reactivos que almacenan 
+# Aquí se conecta la interfaz de usuario con la lógica del modelo, 
+# permitiendo la ejecución del análisis, la validación de datos y el 
+# control de errores. Administra las reacciones que almacenan 
 # resultados y actualiza las tablas y reportes.
 
 server <- function(input, output, session) {
@@ -536,7 +536,7 @@ server <- function(input, output, session) {
 # EJECUCIÓN APP
 #============================================================
 
-# Es en este bloque final donde se inicia y ejecuta la aplicación Shiny, 
+# Es en este bloque final es donde se inicia y ejecuta la aplicación Shiny, 
 # integrando la interfaz de usuario y el servidor en un entorno 
 # interactivo. Permite el despliegue del sistema para su uso en 
 # tiempo real.
