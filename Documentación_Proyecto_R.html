@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Wilfredo Antonio Mergarejo Aponte">
+<meta name="dcterms.date" content="2026-02-08">
+
+<title>Sistema de Gestión de Liquidez de Corto Plazo</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="Documentación_Proyecto_R_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Documentación_Proyecto_R_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="Documentación_Proyecto_R_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="Documentación_Proyecto_R_files/libs/quarto-html/popper.min.js"></script>
+<script src="Documentación_Proyecto_R_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Documentación_Proyecto_R_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Documentación_Proyecto_R_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Documentación_Proyecto_R_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Documentación_Proyecto_R_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Documentación_Proyecto_R_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Documentación_Proyecto_R_files/libs/bootstrap/bootstrap-bb462d781dde1847d9e3ccf7736099dd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Sistema de Gestión de Liquidez de Corto Plazo</h1>
+<p class="subtitle lead">Documentación, Evidencias, Despliegue y Monitoreo</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Wilfredo Antonio Mergarejo Aponte </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 8, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="descripción-general-del-sistema" class="level1">
+<h1>1. Descripción General del Sistema</h1>
+<p>El sistema desarrollado permite proyectar el flujo de caja de corto plazo, identificar brechas de liquidez y generar recomendaciones automáticas de gestión financiera, tales como la priorización de cobranza, la reprogramación de pagos y la sugerencia del uso de líneas de crédito. La solución fue implementada en el lenguaje de programación R y presentada al usuario final mediante una aplicación interactiva desarrollada con Shiny, facilitando su uso por parte de usuarios no técnicos del área de administración y finanzas.</p>
+<p><br>
+Este sistema me abordar un problema recurrente en la gestión financiera de mi local comercial, la falta de visibilidad anticipada sobre la disponibilidad de caja, permitiendo pasar desde una gestión reactiva a una gestión preventiva de la liquidez.</p>
+</section>
+<section id="evidencia-de-limpieza-y-transformación-de-datos" class="level1">
+<h1>2. Evidencia de Limpieza y Transformación de Datos</h1>
+<p>La calidad de los resultados del sistema depende directamente de la calidad de los datos de entrada. Por esta razón, se implementó un proceso sistemático de limpieza y transformación de datos previo a cualquier análisis o proyección.</p>
+<section id="evidencia-en-r-carga-y-preparación-de-datos" class="level3">
+<h3 class="anchored" data-anchor-id="evidencia-en-r-carga-y-preparación-de-datos">2.1 Evidencia en R: Carga y Preparación de Datos</h3>
+<p>```{r}</p>
+<p>library(tidyverse) library(lubridate) library(readxl) library(janitor)</p>
+<section id="parámetros" class="level4">
+<h4 class="anchored" data-anchor-id="parámetros">#Parámetros</h4>
+<p>umbral_minimo &lt;- 800000 horizonte &lt;- 30</p>
+</section>
+<section id="rutas-de-datos-estructura-del-proyecto" class="level4">
+<h4 class="anchored" data-anchor-id="rutas-de-datos-estructura-del-proyecto">#Rutas de datos (estructura del proyecto)</h4>
+<p>path_saldo &lt;- “data/saldo.xlsx” path_cobros &lt;- “data/cobros.xlsx” path_pagos &lt;- “data/pagos.xlsx”</p>
+</section>
+<section id="carga-de-datos" class="level4">
+<h4 class="anchored" data-anchor-id="carga-de-datos">#Carga de datos</h4>
+<p>saldo &lt;- read_excel(path_saldo) %&gt;% clean_names() cobros &lt;- read_excel(path_cobros) %&gt;% clean_names() pagos &lt;- read_excel(path_pagos) %&gt;% clean_names()</p>
+<p>```</p>
+<p>La carga estructurada de datos desde archivos Excel me permite integrar información financiera proveniente de distintas fuentes operativas, asegurando trazabilidad y reproducibilidad del proceso.</p>
+</section>
+</section>
+<section id="evidencia-en-r-limpieza-y-transformación" class="level3">
+<h3 class="anchored" data-anchor-id="evidencia-en-r-limpieza-y-transformación">2.2 Evidencia en R: Limpieza y Transformación</h3>
+<p>```{r}</p>
+<section id="limpieza-y-transformación" class="level4">
+<h4 class="anchored" data-anchor-id="limpieza-y-transformación"># Limpieza y transformación</h4>
+<p>saldo &lt;- saldo %&gt;% mutate(fecha = as_date(fecha), saldo = as.numeric(saldo)) %&gt;% filter(!is.na(fecha), !is.na(saldo)) %&gt;% arrange(fecha)</p>
+<p>cobros &lt;- cobros %&gt;% mutate(fecha = as_date(fecha), monto = as.numeric(monto), estado = str_to_upper(estado)) %&gt;% filter(!is.na(fecha), !is.na(monto)) %&gt;% mutate(monto = if_else(monto &lt; 0, 0, monto))</p>
+<p>pagos &lt;- pagos %&gt;% mutate(fecha = as_date(fecha), monto = as.numeric(monto), criticidad = str_to_lower(criticidad), estado = str_to_upper(estado)) %&gt;% filter(!is.na(fecha), !is.na(monto)) %&gt;% mutate(monto = if_else(monto &lt; 0, 0, monto))</p>
+<p>```</p>
+<p>Este proceso me garantiza consistencia en formatos de fecha y montos, elimina registros inválidos y estandariza estados de cobros y pagos, reduciendo el riesgo de errores en la proyección de caja.</p>
+</section>
+</section>
+</section>
+<section id="evidencia-del-modelo-de-proyección-de-liquidez" class="level1">
+<h1>3. Evidencia del Modelo de Proyección de Liquidez</h1>
+<section id="método-utilizado" class="level3">
+<h3 class="anchored" data-anchor-id="método-utilizado">3.1 Método Utilizado</h3>
+<p>El sistema utiliza un modelo determinístico de proyección de caja, basado en la acumulación diaria de flujos netos (cobros menos pagos), complementado con reglas de decisión basadas en un umbral mínimo de liquidez definido por la organización.</p>
+<p><br>
+Este enfoque es adecuado para la gestión de corto plazo, ya que se privilegia la transparencia del cálculo y la facilidad de interpretación por parte de otros usuarios.</p>
+</section>
+<section id="evidencia-en-r-proyección-de-caja-y-semáforo" class="level3">
+<h3 class="anchored" data-anchor-id="evidencia-en-r-proyección-de-caja-y-semáforo">3.2 Evidencia en R: Proyección de Caja y Semáforo</h3>
+<p>```{r}</p>
+<section id="saldo-inicial-último-saldo-disponible" class="level4">
+<h4 class="anchored" data-anchor-id="saldo-inicial-último-saldo-disponible">#Saldo inicial (último saldo disponible)</h4>
+<p>saldo_inicial &lt;- saldo %&gt;% slice_max(fecha, n = 1) %&gt;% pull(saldo)</p>
+</section>
+<section id="proyección-de-caja" class="level4">
+<h4 class="anchored" data-anchor-id="proyección-de-caja">#Proyección de caja</h4>
+<p>hoy &lt;- Sys.Date() fechas &lt;- tibble(fecha = seq(hoy, hoy + horizonte, by = “day”))</p>
+<p>flujo &lt;- fechas %&gt;% left_join(cobros %&gt;% filter(estado != “PAGADO”) %&gt;% group_by(fecha) %&gt;% summarise(cobros = sum(monto), .groups = “drop”), by = “fecha”) %&gt;% left_join(pagos %&gt;% filter(estado != “PAGADO”) %&gt;% group_by(fecha) %&gt;% summarise(pagos = sum(monto), .groups = “drop”), by = “fecha”) %&gt;% mutate( cobros = replace_na(cobros, 0), pagos = replace_na(pagos, 0), flujo_neto = cobros - pagos, saldo = saldo_inicial + cumsum(flujo_neto), semaforo = case_when( saldo &lt; 0 ~ “ROJO”, saldo &lt; umbral_minimo ~ “AMARILLO”, TRUE ~ “VERDE” ) )</p>
+<p>```</p>
+<p>Es aquí donde puedo anticipar déficits de liquidez y clasificar el riesgo financiero mediante un semáforo, facilitando la toma de decisiones oportunas.</p>
+</section>
+</section>
+<section id="evidencia-en-r-identificación-del-peor-día" class="level3">
+<h3 class="anchored" data-anchor-id="evidencia-en-r-identificación-del-peor-día">3.3 Evidencia en R: Identificación del Peor Día</h3>
+<p>```{r}</p>
+<p>peor_dia &lt;- flujo %&gt;% slice_min(saldo, n = 1) peor_dia</p>
+<p>```</p>
+<p>La identificación del día con menor saldo proyectado me permite focalizar acciones correctivas en el punto de mayor riesgo de liquidez.</p>
+</section>
+<section id="evidencia-visual-gráfico-de-saldo-proyectado" class="level3">
+<h3 class="anchored" data-anchor-id="evidencia-visual-gráfico-de-saldo-proyectado">3.4 Evidencia Visual: Gráfico de Saldo Proyectado</h3>
+<p>```{r}</p>
+<p>plot(flujo<span class="math inline">\(fecha, flujo\)</span>saldo, type = “l”, xlab = “Fecha”, ylab = “Saldo proyectado”) abline(h = umbral_minimo, lty = 2)</p>
+<p>```</p>
+<p>La visualización gráfica me facilita la comprensión del comportamiento de la caja y la detección temprana de escenarios críticos por parte de los usuarios.</p>
+</section>
+</section>
+<section id="despliegue-de-la-solución" class="level1">
+<h1>4. Despliegue de la Solución</h1>
+<p>El despliegue de la solución se plantea inicialmente en un entorno local mediante una aplicación Shiny, permitiendo su ejecución en equipos del área de finanzas sin requerir conocimientos técnicos avanzados. El usuario interactúa con la aplicación cargando archivos Excel y obteniendo automáticamente proyecciones, alertas y reportes.</p>
+<p>Como alternativa de escalamiento, el sistema puede ser desplegado en un servidor Shiny habilitando el acceso remoto mediante un navegador web y permitiendo un control centralizado de versiones.</p>
+<p><br>
+Con este enfoque de despliegue reduce barreras tecnológicas y facilita la adopción progresiva del sistema en contextos reales de gestión financiera.</p>
+</section>
+<section id="monitoreo-del-modelo" class="level1">
+<h1>5. Monitoreo del Modelo</h1>
+<p>El monitoreo del sistema se orienta a asegurar la vigencia y confiabilidad de las proyecciones de liquidez generadas. Para ello, se propone:</p>
+<ul>
+<li><p>Comparar periódicamente los saldos proyectados con los saldos reales observados.</p></li>
+<li><p>Monitorear la frecuencia y duración de alertas de liquidez (estados rojo y amarillo).</p></li>
+<li><p>Evaluar la efectividad de las recomendaciones emitidas.</p></li>
+<li><p>Validar la calidad de los datos de entrada en cada ejecución.</p></li>
+<li><p>Ajustar umbrales y reglas de decisión según cambios en el contexto financiero.</p></li>
+</ul>
+<p><br>
+El monitoreo continuo me permite mejorar progresivamente el desempeño del sistema y fortalecer su utilidad como herramienta de apoyo a la toma de decisiones financieras de corto plazo.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
