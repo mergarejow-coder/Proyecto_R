@@ -1,0 +1,130 @@
+---
+title: "Sistema de Gestión de Liquidez de Corto Plazo"
+subtitle: "Documentación, Evidencias, Despliegue y Monitoreo"
+author: "Wilfredo Antonio Mergarejo Aponte"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+  pdf:
+    toc: true
+    number-sections: true
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+# 1. Descripción General del Sistema
+
+El sistema desarrollado permite proyectar el flujo de caja de corto plazo, identificar brechas de liquidez y generar recomendaciones automáticas de gestión financiera, tales como la priorización de cobranza, la reprogramación de pagos y la sugerencia del uso de líneas de crédito. La solución fue implementada en el lenguaje de programación **R** y presentada al usuario final mediante una aplicación interactiva desarrollada con **Shiny**, facilitando su uso por parte de usuarios no técnicos del área de administración y finanzas.
+
+\
+Este sistema me abordar un problema recurrente en la gestión financiera de mi local comercial, la falta de visibilidad anticipada sobre la disponibilidad de caja, permitiendo pasar desde una gestión reactiva a una gestión preventiva de la liquidez.
+
+# 2. Evidencia de Limpieza y Transformación de Datos
+
+La calidad de los resultados del sistema depende directamente de la calidad de los datos de entrada. Por esta razón, se implementó un proceso sistemático de limpieza y transformación de datos previo a cualquier análisis o proyección.
+
+### 2.1 Evidencia en R: Carga y Preparación de Datos
+
+{r}
+
+library(tidyverse) library(lubridate) library(readxl) library(janitor)
+
+#### #Parámetros
+
+umbral_minimo \<- 800000 horizonte \<- 30
+
+#### #Rutas de datos (estructura del proyecto)
+
+path_saldo \<- "data/saldo.xlsx" path_cobros \<- "data/cobros.xlsx" path_pagos \<- "data/pagos.xlsx"
+
+#### #Carga de datos
+
+saldo \<- read_excel(path_saldo) %\>% clean_names() cobros \<- read_excel(path_cobros) %\>% clean_names() pagos \<- read_excel(path_pagos) %\>% clean_names()
+
+La carga estructurada de datos desde archivos Excel me permite integrar información financiera proveniente de distintas fuentes operativas, asegurando trazabilidad y reproducibilidad del proceso.
+
+### 2.2 Evidencia en R: Limpieza y Transformación
+
+{r}
+
+#### \# Limpieza y transformación
+
+saldo \<- saldo %\>% mutate(fecha = as_date(fecha), saldo = as.numeric(saldo)) %\>% filter(!is.na(fecha), !is.na(saldo)) %\>% arrange(fecha)
+
+cobros \<- cobros %\>% mutate(fecha = as_date(fecha), monto = as.numeric(monto), estado = str_to_upper(estado)) %\>% filter(!is.na(fecha), !is.na(monto)) %\>% mutate(monto = if_else(monto \< 0, 0, monto))
+
+pagos \<- pagos %\>% mutate(fecha = as_date(fecha), monto = as.numeric(monto), criticidad = str_to_lower(criticidad), estado = str_to_upper(estado)) %\>% filter(!is.na(fecha), !is.na(monto)) %\>% mutate(monto = if_else(monto \< 0, 0, monto))
+
+Este proceso me garantiza consistencia en formatos de fecha y montos, elimina registros inválidos y estandariza estados de cobros y pagos, reduciendo el riesgo de errores en la proyección de caja.
+
+# 3. Evidencia del Modelo de Proyección de Liquidez
+
+### 3.1 Método Utilizado
+
+El sistema utiliza un **modelo determinístico de proyección de caja**, basado en la acumulación diaria de flujos netos (cobros menos pagos), complementado con reglas de decisión basadas en un umbral mínimo de liquidez definido por la organización.
+
+\
+Este enfoque es adecuado para la gestión de corto plazo, ya que se privilegia la transparencia del cálculo y la facilidad de interpretación por parte de otros usuarios.
+
+### 3.2 Evidencia en R: Proyección de Caja y Semáforo
+
+{r}
+
+#### #Saldo inicial (último saldo disponible)
+
+saldo_inicial \<- saldo %\>% slice_max(fecha, n = 1) %\>% pull(saldo)
+
+#### #Proyección de caja
+
+hoy \<- Sys.Date() fechas \<- tibble(fecha = seq(hoy, hoy + horizonte, by = "day"))
+
+flujo \<- fechas %\>% left_join(cobros %\>% filter(estado != "PAGADO") %\>% group_by(fecha) %\>% summarise(cobros = sum(monto), .groups = "drop"), by = "fecha") %\>% left_join(pagos %\>% filter(estado != "PAGADO") %\>% group_by(fecha) %\>% summarise(pagos = sum(monto), .groups = "drop"), by = "fecha") %\>% mutate( cobros = replace_na(cobros, 0), pagos = replace_na(pagos, 0), flujo_neto = cobros - pagos, saldo = saldo_inicial + cumsum(flujo_neto), semaforo = case_when( saldo \< 0 \~ "ROJO", saldo \< umbral_minimo \~ "AMARILLO", TRUE \~ "VERDE" ) )
+
+Es aquí donde puedo anticipar déficits de liquidez y clasificar el riesgo financiero mediante un semáforo, facilitando la toma de decisiones oportunas.
+
+### 3.3 Evidencia en R: Identificación del Peor Día
+
+{r}
+
+peor_dia \<- flujo %\>% slice_min(saldo, n = 1) peor_dia
+
+La identificación del día con menor saldo proyectado me permite focalizar acciones correctivas en el punto de mayor riesgo de liquidez.
+
+### 3.4 Evidencia Visual: Gráfico de Saldo Proyectado
+
+{r}
+
+plot(flujo$fecha, flujo$saldo, type = "l", xlab = "Fecha", ylab = "Saldo proyectado") abline(h = umbral_minimo, lty = 2)
+
+La visualización gráfica me facilita la comprensión del comportamiento de la caja y la detección temprana de escenarios críticos por parte de los usuarios.
+
+# 4. Despliegue de la Solución
+
+El despliegue de la solución se plantea inicialmente en un entorno local mediante una aplicación Shiny, permitiendo su ejecución en equipos del área de finanzas sin requerir conocimientos técnicos avanzados. El usuario interactúa con la aplicación cargando archivos Excel y obteniendo automáticamente proyecciones, alertas y reportes.
+
+Como alternativa de escalamiento, el sistema puede ser desplegado en un servidor Shiny habilitando el acceso remoto mediante un navegador web y permitiendo un control centralizado de versiones.
+
+\
+Con este enfoque de despliegue reduce barreras tecnológicas y facilita la adopción progresiva del sistema en contextos reales de gestión financiera.
+
+# 5. Monitoreo del Modelo
+
+El monitoreo del sistema se orienta a asegurar la vigencia y confiabilidad de las proyecciones de liquidez generadas. Para ello, se propone:
+
+-    Comparar periódicamente los saldos proyectados con los saldos reales observados.
+
+-   Monitorear la frecuencia y duración de alertas de liquidez (estados rojo y amarillo).
+
+-   Evaluar la efectividad de las recomendaciones emitidas.
+
+-   Validar la calidad de los datos de entrada en cada ejecución.
+
+-   Ajustar umbrales y reglas de decisión según cambios en el contexto financiero.
+
+\
+El monitoreo continuo me permite mejorar progresivamente el desempeño del sistema y fortalecer su utilidad como herramienta de apoyo a la toma de decisiones financieras de corto plazo.
